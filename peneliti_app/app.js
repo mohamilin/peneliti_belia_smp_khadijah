@@ -3,17 +3,32 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const methodOverride = require("method-override");
+console.log('methodOverride', methodOverride)
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const { Sequelize } = require('sequelize');
 
 var app = express();
+
+const sequelize = new Sequelize('peneliti_app', 'postgres', 'amilin', {
+  host: 'localhost',
+  dialect:'postgres'
+})
+
+try {
+  sequelize.authenticate();
+  console.log('Connection has been established successfully.');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
+app.use(methodOverride("_method"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -21,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // hubungkan dg public
 app.use(express.static(path.join(__dirname, 'public/template')));
+app.use(express.static(path.join(__dirname, 'public/frontend')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
