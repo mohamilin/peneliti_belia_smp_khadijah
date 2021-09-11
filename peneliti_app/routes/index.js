@@ -17,7 +17,9 @@ router.get('/login', function(req, res, next) {
 
 
 router.get('/', function(req, res, next) {
-  res.render('homepage', { title: 'Express' });
+  const time = moment().format('LT');
+  const date = moment().add(10, 'days').calendar();  
+  res.render('homepage', { title: 'Express', time:time, date: date });
 });
 
 router.get('/dashboard', function(req, res, next) {
